@@ -2,8 +2,9 @@ lib_linux = /usr/lib/libGL.so /usr/lib/libglut.so /usr/lib/libGLU.so
 lib_mac = -framework GLUT -framework OpenGL
 lib_win = 
 
-NETLIST_COMPILER = ./compilateurNetlist_openGL
 CPU = cpu
+ROM = code
+CODE = clock.s
 
 ifeq ($(OS),Windows_NT)
 	lib = $(lib_win)
@@ -18,9 +19,14 @@ endif
 
 all:cpu.exe
 	@echo "Compilation done !"
+run:
+	@if test -e cpu.exe; then ./cpu.exe; else make; ./cpu.exe;fi
+
+speed:
+	@if test -e cpu.exe; then ./cpu.exe -hs; else make; ./cpu.exe -hs;fi
 
 cpu.c: Build_C Build_Rom
-	@if test -e _build/cpu.c; then echo ""; else _build/compilateurNetlist.exe cpu.net;mv cpu.c _build/cpu.c ;fi
+	@if test -e _build/cpu.c; then echo ""; else _build/compilateurNetlist.exe $(CPU).net;mv $(CPU).c _build/cpu.c ;fi
 	
 
 Build_C:
@@ -32,25 +38,25 @@ Build_A:
 	@cp _build/default/assembly.exe _build/assembly.exe
 
 Build_Rom: Build_A
-	@_build/assembly.exe ROMcode.s -o ROMcode.rom
+	@_build/assembly.exe $(CODE) -o ROM$(ROM).rom
 
 cpu.exe: cpu.c
 	@if test -e cpu.exe; then echo ""; else gcc _build/cpu.c -o cpu.exe $(lib) -Os; fi
 
 help:
 	@echo "make : compile everything"
-	@echo "make netlist_compiler : compiles only the OCaml netlist -> C compiler"
-	@echo "make simulator : compiles the simulator from netlest to a C file"
-	@echo "make bin : compiles the C simulator into an executable version"
 	@echo "make clean : cleans the directory from EVERYTHING that is compiled"
+	@echo "make run : run the clock in real time mode"
+	@echo "make speed : run the clock at maximum speed"
 	@echo "Options:"
-	@echo "	CPU : path to the netltlist CPU (without extension),"
-	@echo "	NETLIST_COMPILER : path to the .ml compiler, without the extension"
+	@echo "	CPU : path to the netlist CPU (without extension!),"
+	@echo "	ROM : name of the rom in the CPU,"
+	@echo "	CODE: name of the code to execute (extension .s)"
 
 clean:
 	@rm -rf _build
-	@rm ROMcode.rom
-	@rm cpu.exe
+	@rm -f ROMcode.rom
+	@rm -f cpu.exe
 	@echo "Directory cleaned!"
 
 .PHONY: all clean
