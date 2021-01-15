@@ -47,7 +47,7 @@ long tps_tmp;
 int numberSteps=-1;
 int iStep;
 int iFrame=0;
-unsigned addr;
+unsigned long long addr;
 char liste[256];
 
 char hyperspeed=0;
@@ -192,10 +192,10 @@ let debut () = ref
 "
 
 
-let debutBoucle () = 
+let debutBoucle i = 
 (* la RAM est déjà définie, on peut donc déjà faire le MMIO *)
 "
-\tmmio= o;
+\tmmio= o + "^string_of_int i^";
 \tsecond1 = mmio + 0;
 \tsecond10 = mmio + 7;
 \tminute1 = mmio + 14;
@@ -293,6 +293,8 @@ void update() {
     }
     if(numberSteps > -1 & iStep >=numberSteps){
         glutDestroyWindow(win);
+        printf(\"\\n\");
+        exit(0);
     }
     else{
 "
@@ -351,9 +353,9 @@ let get_filename s = filename := s
 
 let main () =
   Arg.parse 
-  	["-v", Arg.Set verbose, "Prints more debug information"]
+  	[("-v", Arg.Set verbose, "Prints more debug information");("-size", Arg.Set_int CompilateurNetlist.max_size, "Address size of ram allowed (by default 10)")]
     get_filename "";
     
-    CompilateurNetlist.compile (decl ()) (debut ()) (debutBoucle ()) (finBoucle ()) (fin ()) !filename !verbose
+    CompilateurNetlist.compile (decl ()) (debut ()) (debutBoucle (32 lsl !CompilateurNetlist.max_size)) (finBoucle ()) (fin ()) !filename !verbose
 ;;
 main ()

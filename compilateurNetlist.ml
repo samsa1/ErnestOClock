@@ -21,7 +21,7 @@ let debut = ref
 let debutBoucle verbose = 
 "\tfor (int i = 0; i != numberSteps; i++) {
 \t\tchar liste[256];
-\t\tint addr;\n"^(if not verbose then "" else 
+\t\t long long addr;\n"^(if not verbose then "" else 
 "\t\tprintf(\"Etape : %d/%d\\n\", i+1, numberSteps);\n")
 
 let (finBoucle:string) = ""
@@ -49,11 +49,11 @@ let traductionNot fmt filS filE = Format.fprintf fmt "\t\t%a = !(%a);\n" filn fi
 let traductionLectureRam fmt n lfilS lfilA = 
 	let lengthA = Array.length lfilA in 
 	let lengthS = Array.length lfilS in 
-	Format.fprintf fmt "\t\taddr = 0"; 
+	Format.fprintf fmt "\t\taddr = %d" (1 lsl !max_size); 
 	for i = 0 to lengthA - 1 do 
 		Format.fprintf fmt "+ (%a<<%d)" filn lfilA.(i) (lengthA - 1 - i)
 	done;
-	Format.fprintf fmt ";\n\t\tif (addr <= %d) {\n" (1 lsl !max_size);
+	Format.fprintf fmt ";\n\t\tif (addr < %d) {\n" (2 lsl !max_size);
 	for i = 0 to lengthS - 1 do 
 		Format.fprintf fmt "\t\t%a = %s[addr * %d+%i];\n" filn lfilS.(i) n lengthS i
 	done;
@@ -77,17 +77,17 @@ let traductionLectureRom fmt n lfilS lfilA =
 	done;;
 
 let traductionEcritureRam fmt n filE lfilAddr lfilData = 
-	Format.fprintf fmt "\t\tif (%a) {\n\t\t\tint addresse = 0" filn filE;
+	Format.fprintf fmt "\t\tif (%a) {\n\t\t\tlong long unsigned addresse = %d" filn filE (1 lsl !max_size);
 	let lengthA = Array.length lfilAddr in 
 	let lengthD = Array.length lfilData in 
 	for i = 0 to lengthA - 1 do 
 		Format.fprintf fmt "+ (%a<<%d)" filn lfilAddr.(i) (lengthA - 1 - i)
 	done;
-	Format.fprintf fmt ";\n";
+	Format.fprintf fmt ";\n\t\tif (addresse < %d) {\n" (2 lsl !max_size);
 	for i = 0 to lengthD - 1 do 
 		Format.fprintf fmt "\t\t\t%s[addresse * %d+ %d ] = %a;\n" n lengthD i filn lfilData.(i)
 	done;
-	Format.fprintf fmt "\t\t}\n"
+	Format.fprintf fmt "\t\t\t} else {printf(\"Congrats, you just segfaulted\\n\");exit(1);};\n\t\t};\n"
 
 
 let traductionReg fmt filR filE = Format.fprintf fmt "\t\t%a = %a;\n" filn filR filn filE;;
@@ -171,7 +171,7 @@ let compilateur fmt p decl_var debut_var debutBoucle_var finBoucle_var fin_var v
 	let rec declareRam fmt = function
 		|[] -> ()
 		|(n,Eram (i,j,_,_,_,_))::tl -> begin
-			Format.fprintf fmt "\nchar %s[%d];\n%a" n (j lsl (min i !max_size)) declareRam tl
+			Format.fprintf fmt "\nchar %s[%d];\n%a" n (j lsl (1+min i !max_size)) declareRam tl
 			end
 		|(n,Erom (_,j,_))::tl -> begin
 			let f = open_in ("./ROM"^n^".rom") in
