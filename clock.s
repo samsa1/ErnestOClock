@@ -455,11 +455,11 @@ affichage_dizaines_Jour:
     move %r28 $115
     or %r27 %r28
     mov (%r26) %r27
-affichage_unite_Secondes:
     xor %r26 %r26
-    mov %r28 $0
-    cmp %r01 $0
-    move %r28 $95
+affichage_unite_Secondes:
+    cmp %r01 $5
+    jge "us_59"
+    mov %r28 $95
     cmp %r01 $1
     move %r28 $3
     cmp %r01 $2
@@ -468,22 +468,21 @@ affichage_unite_Secondes:
     move %r28 $115
     cmp %r01 $4
     move %r28 $43
-    cmp %r01 $5
+    jmp "us_fin"
+us_59:
+    mov %r28 $125
     move %r28 $121
-    cmp %r01 $6
-    move %r28 $125
     cmp %r01 $7
     move %r28 $67
     cmp %r01 $8
     move %r28 $127
     cmp %r01 $9
     move %r28 $123
+us_fin:
     lsl %r28 $25
     mov (%r26) %r28
 affichage_dizaines_Secondes:
-    mov %r28 $0
-    cmp %r02 $0
-    move %r28 $95
+    mov %r28 $95
     cmp %r02 $1
     move %r28 $3
     cmp %r02 $2
@@ -497,9 +496,7 @@ affichage_dizaines_Secondes:
     lsl %r28 $18
     or (%r26) %r28
 affiche_unite_Minutes:
-    mov %r28 $0
-    cmp %r03 $0
-    move %r28 $95
+    mov %r28 $95
     cmp %r03 $1
     move %r28 $3
     cmp %r03 $2
@@ -521,9 +518,7 @@ affiche_unite_Minutes:
     lsl %r28 $11
     or (%r26) %r28
 affichage_dizaines_Minutes:
-    mov %r28 $0
-    cmp %r04 $0
-    move %r28 $95
+    mov %r28 $95
     cmp %r04 $1
     move %r28 $3
     cmp %r04 $2
