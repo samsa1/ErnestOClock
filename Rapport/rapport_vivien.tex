@@ -3,7 +3,24 @@
 \documentclass[10pt,a4paper,notitlepage ]{report}
 
 \usepackage{pfmath}
+
+
+\usepackage{color}
+\definecolor{myyellow}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
 \usepackage{listings}
+\lstset{
+	backgroundcolor=\color{yellow!5!white},
+	keywordstyle=\color{violet!80!black},
+	numbers=left,
+	frame=single,
+	numberstyle=\tiny\color{violet!80!black},
+	escapeinside={\%*}{*)},
+	stringstyle=\color{black!10!yellow},
+	morecomment=[l][\color{green}]{\$}
+	}
+
 
 \title{Systèmes numériques - \textsc{Ernest'O'Clock}}
 \date{Premier semestre 2020}
@@ -71,12 +88,11 @@
 
 			Voici donc le code assembleur de notre division euclidienne qui fait la division de la valeur dans \texttt{\%r28} par 86400. Avec le reste dans \texttt{\%r28} et le quotient \texttt{\%r27}
 
-\begin{lstlisting}
-
+\begin{lstlisting}[language={[x86masm]Assembler},morekeywords={lsr}]
 	mov %r26 $86400
 	mov %r25 %r26
 	jmp "ew1"
-bw1:
+%*\texttt{bw1:}*)
 	lsl %r25 $1
 ew1:
 	cmp %r28 %r25
