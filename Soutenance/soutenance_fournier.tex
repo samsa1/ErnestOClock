@@ -1,0 +1,71 @@
+% !TeX spellcheck = fr-FR
+
+\documentclass[intlimits, 10pt]{beamer}
+\usetheme{Hannover}
+\usecolortheme{crane}
+
+
+%%% Pretty pretty
+\setbeamercolor{alerted text}{fg=violet!80!black}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{title}{fg=violet!80!black, bg=yellow!80!white}
+\setbeamercolor{titlelike}{fg=violet, bg=yellow!80!white}
+\setbeamercolor{sidebar}{bg=yellow!60!white}
+\setbeamercolor{structure}{fg=violet!80!black}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{subsection in sidebar}{fg=violet!80!black}
+\setbeamercolor{subsection in sidebar shaded}{fg=violet!40!gray}
+\setbeamercolor{section in sidebar}{fg=violet!80!black}
+\setbeamercolor{section in sidebar shaded}{fg=violet!40!gray}
+\setbeamercolor{title in sidebar}{fg=violet!80!black}
+\setbeamercolor{author in sidebar}{fg=violet!50!gray}
+\setbeamercolor{block title}{fg=violet!80!black, bg=yellow!80!white}
+\setbeamercolor{block body}{bg=yellow!15!white}
+
+\addtobeamertemplate{navigation symbols}{}{%
+	\usebeamerfont{footline}%
+	\usebeamercolor[fg]{footline}%
+	\hspace{1em}%
+	\insertframenumber/\inserttotalframenumber
+}
+
+%todo : enlever références
+%todo : enlever texte inutile (ex : slide 9/10)
+%todo : exemple fil conducteur
+
+
+\usepackage{pfmathbeamer}
+\usepackage[backend=bibtex,style=numeric, citestyle=numeric]{biblatex}
+%\bibliography{pac-project.bib}
+\usepackage{graphicx}
+
+
+\hypersetup{pdfstartview=Fit}
+
+\title[\textsc{Ernest'O'Clock}]{Projet de Systèmes Numériques}
+\date{}
+\author[\textsc{Fournier}, \textsc{Schabanel}, \textsc{Vivien}]{Paul \textsc{Fournier}, Juliette \textsc{Schabanel}, Samuel \textsc{Vivien}}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\newcommand{\bmm}[1]{\texorpdfstring{$\bm{#1}$}{#1}}
+
+\AtBeginPart{\frame{\partpage}}
+\AtBeginSection{\frame{\sectionpage}}
+\AtBeginSubsection{\frame{\subsectionpage}}
+
+\begin{document}
+	\selectlanguage{french}
+	
+	\maketitle	
+	
+	\begin{frame}
+		\tableofcontents
+	\end{frame}
+	
+	\section{<cartesian section>}
+	
+	\begin{frame}{<cartesian frame>}
+		<text goes here>
+	\end{frame}
+\end{document}

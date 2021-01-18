@@ -1,0 +1,186 @@
+%MIT License
+%
+%Copyright (c) 2020 Paul Fournier
+%
+%Permission is hereby granted, free of charge, to any person obtaining a copy
+%of this software and associated documentation files (the "Software"), to deal
+%in the Software without restriction, including without limitation the rights
+%to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%copies of the Software, and to permit persons to whom the Software is
+%furnished to do so, subject to the following conditions:
+%
+%The above copyright notice and this permission notice shall be included in all
+%copies or substantial portions of the Software.
+%
+%THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+%SOFTWARE.
+
+
+\ProvidesPackage{pfmath}
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[french, english]{babel}
+\RequirePackage[intlimits]{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{wasysym}
+\RequirePackage{graphicx}
+\RequirePackage{dsfont}
+\RequirePackage{tcolorbox}
+\RequirePackage{stmaryrd}
+\RequirePackage{bm}
+\RequirePackage[left=1.50cm, right=1.50cm, top=1.50cm, bottom=1.50cm]{geometry}
+\RequirePackage[cal=euler, bb=ams, frak=euler, scr=rsfs]{mathalpha}
+\RequirePackage{xfrac}
+
+\everymath{\displaystyle}
+
+
+
+
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\renewcommand{\cal}{\mathcal}
+\newcommand{\bcal}{\mathbcal}
+\newcommand{\scr}{\mathscr}
+\newcommand{\bscr}{\mathbscr}
+\newcommand{\bb}{\mathbb}
+\newcommand{\bbb}{\mathbbb}
+\renewcommand{\bf}{\mathbf}
+\newcommand{\bbf}{\mathbbf}
+\renewcommand{\rm}{\mathrm}
+\newcommand{\brm}{\mathbrm}
+\renewcommand{\tt}{\mathtt}
+\newcommand{\btt}{\mathbtt}
+\renewcommand{\frak}{\mathfrak}
+\newcommand{\bfrak}{\mathbfrak}
+
+\newcommand{\N}{\bb N}
+\newcommand{\R}{\bb R}
+\newcommand{\Q}{\bb Q}
+\newcommand{\Z}{\bb Z}
+\renewcommand{\C}{\bb C}
+\newcommand{\T}{\cal T}
+\newcommand{\A}{\cal A}
+\newcommand{\B}{\cal B}
+\newcommand{\dd}{\ \rm d}
+\newcommand{\Ocal}{\cal O}
+\newcommand{\1}{\mathds 1}
+\newcommand{\LL}{\scr L}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\comp}[1]{#1^\complement}
+\newcommand{\indep}{\perp \!\!\! \perp}
+\DeclareMathOperator{\im}{Im}
+\newcommand{\borel}{\rm{Borel}}
+\newcommand{\prob}{\bb P}
+\newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\norm}[2][]{\|#2\|_{#1}}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\Adh}{Adh}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\Esp}{\mathbb{E}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+
+
+\renewcommand{\emph}[1]{{\color{violet}\bfseries{#1}}}
+
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{enonce}[1]
+{ 	no shadow,
+	coltext=violet!50!black,
+	colframe=violet!80!black,
+	colbacktitle=violet!80!black,
+	coltitle=yellow!80!white,
+	colback=yellow!5!white,
+	fonttitle=\bfseries,
+	bottomrule=0pt,
+	rightrule=0pt,
+	sharp corners,
+	rounded corners=northwest,
+	arc=1pt,
+	enhanced,
+	title={#1}}
+
+\newcounter{def}
+\newenvironment{definition}[1][]{
+	\refstepcounter{def}
+	\begin{tcolorbox}[title={\iflanguage{french}{Définition}{Definition}\ \thedef\ #1\label{Def\thedef}}, fonttitle=\bfseries, enhanced, no shadow, bottomrule=0pt, rightrule=0pt, sharp corners]
+}
+{\end{tcolorbox}}
+
+\newcounter{th}
+\newenvironment{theorem}[1][]{
+\refstepcounter{th}
+\begin{enonce}{{\iflanguage{french}{Théorème}{Theorem}\  \theth\ #1}\label{Thm\theth}}
+	
+}{\end{enonce}}
+
+\newcounter{prop}
+\newenvironment{propriete}[1][]{
+	\refstepcounter{prop}
+	\begin{enonce}{{\iflanguage{french}{Propriété}{Propriety}\ \theprop\ #1}\label{Prop\theprop}}
+}
+{\end{enonce}}
+
+\newenvironment{demo}[1][]{
+
+	\textbf{\iflanguage{french}{Démonstration}{Demonstration} #1 :}
+}{\begin{flushright}
+	$\square$
+\end{flushright}
+}
+
+\newenvironment{exo}{
+	
+	\textbf{Exercice :} }{}
+
+\newenvironment{exemple}{
+	
+	\textbf{Exemple :} }{}
+
+\newcounter{corollaire}
+\newenvironment{corollaire}[1][]{
+	\refstepcounter{corollaire}
+	\begin{enonce}{{\iflanguage{french}{Corollaire}{Corollary}\ \thecorollaire\ #1}\label{Cor\thecorollaire}}
+	}
+	{\end{enonce}}
+
+\newcounter{lemme}
+\newenvironment{lemme}[1][]{
+	\refstepcounter{lemme}
+	\begin{enonce}{{\iflanguage{french}{Lemme}{Lemma}\ \thelemme\ #1}\label{Lem\thelemme}}
+	}
+	{\end{enonce}}
+
+\newenvironment{rem}{
+	
+		\textbf{\iflanguage{french}{Remarque }{Remark}:}}{}
+
+
+\newenvironment{rep}{
+	\begin{tcolorbox}[breakable, blanker, sharp corners, bottomrule=0pt, toprule=0pt, leftrule=0pt, rightrule=0pt, borderline west={1mm}{-10pt}{}]
+		\textbf{\iflanguage{french}{Réponse }{Answer}: }
+		
+	}{\end{tcolorbox}}
+	
+	
+
