@@ -1,3 +1,9 @@
 _build/
 cpu.exe
 ROMcode.s
+
+Rapport/*.log
+Rapport/*.aux
+Rapport/*.out
+Rapport/*.toc
+Rapport/*.pdf
