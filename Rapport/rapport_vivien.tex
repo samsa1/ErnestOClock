@@ -3,7 +3,7 @@
 \documentclass[10pt,a4paper,notitlepage ]{report}
 
 \usepackage{pfmath}
-
+\usepackage{listings}
 
 \title{Systèmes numériques - \textsc{Ernest'O'Clock}}
 \date{Premier semestre 2020}
@@ -69,25 +69,30 @@
 
 			Si vous vous souvenez de comment vous avez appris à faire des division euclidienne en primaire. Alors vous avez juste à convertir le même algorithme mais qui fonctionne en base 2 pour obtenir notre division euclidienne.
 
-			    mov \%r28 (\%r20)
-	mov \%r26 \$86400
-	mov \%r25 \%r26
+			Voici donc le code assembleur de notre division euclidienne qui fait la division de la valeur dans \texttt{\%r28} par 86400. Avec le reste dans \texttt{\%r28} et le quotient \texttt{\%r27}
+
+\begin{lstlisting}
+
+	mov %r26 $86400
+	mov %r25 %r26
 	jmp "ew1"
 bw1:
-	lsl \%r25 \$1
+	lsl %r25 $1
 ew1:
-	cmp \%r28 \%r25
+	cmp %r28 %r25
 	jb "bw1"
-	mov \%r27 \$0
+	mov %r27 $0
 bw2:
-	lsl \%r27 \$1
-	cmp \%r28 \%r25
+	lsl %r27 $1
+	cmp %r28 %r25
 	ja "ew2"
-	add \%r27 \$1
-	sub \%r28 \%r25
+	add %r27 $1
+	sub %r28 %r25
 ew2:
-	lsr \%r25 \$1
-	cmp \%r25 \%r26
+	lsr %r25 $1
+	cmp %r25 %r26
 	jge "bw2"
+
+\end{lstlisting}
 	
 \end{document}
