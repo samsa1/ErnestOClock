@@ -7,3 +7,10 @@ Rapport/*.aux
 Rapport/*.out
 Rapport/*.toc
 Rapport/*.pdf
+
+
+Soutenance/*.log
+Soutenance/*.aux
+Soutenance/*.out
+Soutenance/*.toc
+Soutenance/*.pdf

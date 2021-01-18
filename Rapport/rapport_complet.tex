@@ -20,6 +20,76 @@
 	\pagebreak
 	\pagenumbering{arabic}
 	
-	<text goes here>
-	
+	\section{Microprocesseur}
+
+		\subsection{Le design}
+
+		Le microprocesseur a été construit de façon très simple. Ayant dans l'esprit que l'on essayait de faire quelquechose de simple avec peu d'instructions et beaucoup de registres à la RISC-V. Nous avions un code minijazz fonctionnel pour la multiplication, cependant nous avons décidé de ne pas l'ajouter à notre microprocesseur pour gagner en efficacité.
+
+		Le microprocesseur a donc été construit autour d'un n-adder. Qui nous permettait à l'aide d'une série de multiplexeurs de faire les opérations d'addition, soustraction, incrémentation, décrémentation. Nous avons rajouté à côté de cela les opérations booléennes et les décalages à droite et à gauche.
+
+		Nous avons aussi pris la décision d'opter pour 32 registres de 32 bits, ainsi que 4 flags (carry, overflow, isNeg et notZero).
+
+		De plus afin de nous simplifier la vie nous avons décider de séparer la RAM permettant de stocker des données, de la ROM qui avait pour but de contenir le code.
+
+		Nous avons eu alors un problème : comment charger des valeurs de 32 bits dans une instruction de 32 bits. Nous avons donc décidé de créer ce que nous avons appelé le Demi-registre. Un registre 16 bits qui contient la moitié de l'instruction du cycle précédent. Permettant ainsi de charger en deux cycle une grande valeur. Pour les petites valeurs, il nous suffisait d'indiquer de l'on devait compléter notre valeur de 16bits par des zéros.
+
+		\subsection{Le code machine}
+
+		Une instruction machine se décompose en 5 parties : 
+		\begin{enumerate}
+			\item L'opération codé sur les 7 premiers bits. Il s'agit du parcours dans l'arbre de multiplexeur permettant de nous ramener à la bonne valeur. Nous n'utilisons pas tous les bits pour nos instructions ce qui nous permettrais d'en rajouter plus si besoin.
+
+			\item Sur le 8\ieme bit se situe d'écrire ou non le résultat du calcul. Permettant ainsi de différencier les \textbf{and} et \textbf{sub} des instructions \textbf{test} et \textbf{cmp}.
+
+			\item La valeur d'entrée sur 16 bits. Cependant sur ces bits seulement 5 sont utilisé pour les décalages et les entré de registre. Les autres sont ignorées.
+
+			\item Le type de l'entrée est ensuite implémenté sur 2 bits pour indiquer si il s'agit d'un registre, de la valeur pointé par un registre ou simplement d'une valeur numérique.
+
+			\item Ensuite se situe la valeur de sortie sur 5 bits, car il s'agit forcément de l'indice d'un registre.
+
+			\item Et pour finir sur le 32\ieme bit, une indication sur si il s'agissait de la valeur du registre ou l'emplacement en mémoire pointé par le registre qui nous intéresse
+		\end{enumerate}
+
+
+	\section{Horloge}
+
+		\subsection{Initialisation}
+
+			Une partie relativement technique de l'implémentation de l'horloge résidait dans son initialisation. À partir du nombre de secondes depuis le début de l'univers (aka le premier janvier 1970), il fallait tout décomposer pour avoir l'heure en :
+			\begin{itemize}
+				\item unité des secondes,
+				\item dizaine des secondes,
+				\item unité des minutes,
+				\item dizaines des minutes,
+				\item et cetera, jusqu'au siècle.
+			\end{itemize}
+
+			Pour cela le plus simple est de faire une division euclidienne. Une instruction que nous n'avions pas implémenté dans le microprocesseur. Il a donc fallut l'implémenter en assembleur à l'aide de comparaison et décalages logiques.
+
+			Si vous vous souvenez de comment vous avez appris à faire des division euclidienne en primaire. Alors vous avez juste à convertir le même algorithme mais qui fonctionne en base 2 pour obtenir notre division euclidienne.
+
+			    mov \%r28 (\%r20)
+	mov \%r26 \$86400
+	mov \%r25 \%r26
+	jmp "ew1"
+bw1:
+	lsl \%r25 \$1
+ew1:
+	cmp \%r28 \%r25
+	jb "bw1"
+	mov \%r27 \$0
+bw2:
+	lsl \%r27 \$1
+	cmp \%r28 \%r25
+	ja "ew2"
+	add \%r27 \$1
+	sub \%r28 \%r25
+ew2:
+	lsr \%r25 \$1
+	cmp \%r25 \%r26
+	jge "bw2"
+
+
+		
 \end{document}
