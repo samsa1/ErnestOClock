@@ -1,3 +1,7 @@
+#r00 : clock ; r01, r02 : secondes ; r03, r04 : minutes ; r05, r06 : heures ;  
+#r07, r08 : jours ; r09, r10, r11 : mois ; r12, r13, r14 : année
+#r15 : calcul bissextile ; r16 : changement de mois
+#r17 : addresse ram ; r18 : argument ; r19 : stockage de la position de ccp
     mov %r20 $4
     add (%r20) $3600
 debut:
