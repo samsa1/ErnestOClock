@@ -1,6 +1,6 @@
 % !TeX spellcheck = fr-FR
 
-\documentclass[10pt,a4paper,notitlepage ]{report}
+\documentclass[10pt,a4paper,notitlepage ]{article}
 
 \usepackage{pfmath}
 \usepackage{listings}
@@ -147,7 +147,7 @@
 		\item \texttt{cmp} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x - y$
 		\item \texttt{test} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x \&\& y$
 	\end{itemize}
-	Les registres sont des registres 32 bits et sont au nombre de 32. Ils sont nommés de \texttt{r00} à \texttt{r31}, les trois derniers ayant pour alias respectivement \texttt{rsp, rbp} et \texttt{ccp}\\
+	Les registres sont des registres 32 bits et sont au nombre de 32. Ils sont nommés de \texttt{r00} à \texttt{r31}, les trois derniers ayant pour alias respectivement \texttt{rsp, rbp} et \texttt{cpp}\\
 	Les différents drapeaux autorisés sont :
 	\begin{itemize}
 		\item \texttt{e} : nullité du résultat [ZF]
@@ -165,8 +165,8 @@
 	\end{itemize}}
 	\par{La syntaxe  est calquée sur celle de x86-64 :
 	\begin{itemize}
-		\item[$\bullet$] $\%<nom text{ } du text{ } registre>$ pour désigner la valeur contenue dans un registre.
-		\item[$\bullet$] $(\%<nom text{ } du text{ } registre>)$ pour désigner la valeur contenue en mémoire à l'adresse contenue dans le registre, un seul de ces accès mémoire est autorisé par instruction
+		\item[$\bullet$] $\%<nom \text{ } du \text{ } registre>$ pour désigner la valeur contenue dans un registre.
+		\item[$\bullet$] $(\%<nom \text{ } du \text{ } registre>)$ pour désigner la valeur contenue en mémoire à l'adresse contenue dans le registre, un seul de ces accès mémoire est autorisé par instruction
 		\item[$\bullet$] $\$<entier>$ pour les constantes.
 		\item[$\bullet$] $<label>:$ pour poser un label et $"<label>"$ pour y sauter, les caractère autorisés pour les noms de labels sont les lettres majuscule et minuscules de l'alphabet latin, '\_' et les chiffres hors première caractère (i.e. \texttt{(['a'-'z' 'A'-'Z'] $\vert$ '\_') (['a'-'z' 'A'-'Z'] $\vert$ '\_' $\vert$ ['0'-'9'])*}).
 		\item[$\bullet$] $\#$ pour désigner le début d'un commentaire, tout le texte suivant un $\#$ sera ignoré jusqu'au premier retour à la ligne.
