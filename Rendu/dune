@@ -1,0 +1,8 @@
+(ocamllex
+ (modules lexer netlist_lexer))
+(menhir
+ (modules parser netlist_parser)
+ (flags (-v)))
+(executables
+	(names compilateurNetlist_openGL assembly))
+
