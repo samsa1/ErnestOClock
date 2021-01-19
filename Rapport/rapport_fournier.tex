@@ -13,7 +13,7 @@
 	frame=single,
 	numberstyle=\tiny\color{violet!80!black},
 	escapeinside={\%*}{*)},
-	stringstyle=\color{black!20!yellow},
+	stringstyle=\color{red!20!yellow},
 	morecomment=[l][\color{green}]{\$}
 }
 
@@ -61,7 +61,7 @@
 		\hline
 		Constante (\texttt{true} ou \texttt{false})& Constante ($0$ ou $1$)  \\
 		\hline
-		\texttt{not ?}& \texttt{!?}  (nb: plus rapide qu'un \texttt{xor})\\
+		\texttt{not a}& \texttt{!a}  (nb: plus rapide qu'un \texttt{xor})\\
 		\hline
 		\texttt{and} & \texttt{\&}  \\
 		\hline
@@ -85,13 +85,15 @@
 	
 	Les opérations sont effectuées bit à bit, il pourrait donc y avoir quelques optimisations à effectuer de ce côté là (en écrivant par blocs de puissances de deux par exemple).
 	
+	Pour des questions d'utilisation mémoire du simulateur, et comme nous n'avons pas implémenté de tables de hachage en \texttt{C}, la taille de la RAM est bornée, par une quantité prédéfinie, mais modifiable par un argument optionnel au moment de la compilation.
+	
 	Si une adresse non valide est spécifiée, le CPU lève un \texttt{SEGFAULT}.
 	
 	\subsubsection{Les ROM}
 	
-	Étant immuables, les ROM sont définies en dur dans le code \texttt{C} généré par le compilateur (par exemple, aux alentours des lignes ~150 du code produit pour notre CPU, on peut trouver la ROM comprenant le code à exécuter, telle les disquettes des anciens).
+	Étant immuables, les ROM sont définies en dur dans le code \texttt{C} généré par le compilateur (par exemple, aux alentours des lignes  $\sim$ 150 du code produit pour notre CPU, on peut trouver la ROM comprenant le code à exécuter, telle les disquettes des anciens).
 	
-	On peut donc y lire, comme dans une RAM, et planter sur un \texttt{SEGFAULT} si on fait n'importe quoi.
+	On peut donc y lire, comme dans une RAM, et si une adresse invalide est spécifiée (ex: fin du programme), l'exécution s'arrête proprement.
 	
 	
 	\section{Interface homme machine}
