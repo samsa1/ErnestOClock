@@ -39,7 +39,7 @@
 			\item \texttt{make} qui va simplement build l'exécutable de l'horloge.
 			\item \texttt{make run} qui va build l'exécutable si il ne l'est pas déjà, puis la lancer.
 			\item \texttt{make speed} qui fait la même chose que la commande précédente pas avec le mode hyper-vitesse.
-			\item \texttt{make clean} qui nétoie tout (mais nétoie moins que \texttt{rm -rf $\backslash$ }).
+			\item \texttt{make clean} qui nettoie tout (mais nettoie moins que \texttt{rm -rf $\backslash$ }).
 		\end{itemize}
 
 	\section{Compilation $\tt{.net} \rightarrow \tt{.c}$}
@@ -110,9 +110,9 @@
 
 		\subsection{Le design}
 
-		Le microprocesseur a été construit de façon très simple. Ayant dans l'esprit que l'on essayait de faire quelquechose de simple avec peu d'instructions et beaucoup de registres à la RISC-V. Nous avions un code minijazz fonctionnel pour la multiplication, cependant nous avons décidé de ne pas l'ajouter à notre microprocesseur pour gagner en efficacité.
+		Le microprocesseur a été construit de façon très simple, ayant dans l'esprit que l'on essayait de faire quelque chose de simple avec peu d'instructions et beaucoup de registres à la \texttt{RISC-V}. Nous avions un code \texttt{minijazz} fonctionnel pour la multiplication, cependant nous avons décidé de ne pas l'ajouter à notre microprocesseur pour gagner en efficacité.
 
-		Le microprocesseur a donc été construit autour d'un n-adder. Qui nous permettait à l'aide d'une série de multiplexeurs de faire les opérations d'addition, soustraction, incrémentation, décrémentation. Nous avons rajouté à côté de cela les opérations booléennes et les décalages à droite et à gauche.
+		Le microprocesseur a donc été construit autour d'un $n$-adder. Qui nous permettait à l'aide d'une série de multiplexeurs de faire les opérations d'addition, soustraction, incrémentation, décrémentation. Nous avons rajouté à côté de cela les opérations booléennes et les décalages à droite et à gauche.
 
 		Nous avons aussi pris la décision d'opter pour 32 registres de 32 bits, ainsi que 4 flags (carry, overflow, isNeg et notZero).
 
@@ -126,21 +126,21 @@
 		\begin{enumerate}
 			\item L'opération codé sur les 7 premiers bits. Il s'agit du parcours dans l'arbre de multiplexeur permettant de nous ramener à la bonne valeur. Nous n'utilisons pas tous les bits pour nos instructions ce qui nous permettrais d'en rajouter plus si besoin.
 
-			\item Sur le 8\ieme bit se situe l'ordre d'écrire ou non le résultat du calcul. Permettant ainsi de différencier les \textbf{and} et \textbf{sub} des instructions \textbf{test} et \textbf{cmp}.
+			\item Sur le $8$\ieme bit se situe l'ordre d'écrire ou non le résultat du calcul. Permettant ainsi de différencier les \textbf{and} et \textbf{sub} des instructions \textbf{test} et \textbf{cmp}.
 
-			\item La valeur d'entrée sur 16 bits. Il peut s'agir d'une valeur numérique, ou du numéro d'un registre. Cette valeur est sauvegardé dans le demi-registre pour le cycle suivant.
+			\item La valeur d'entrée sur $16$ bits. Il peut s'agir d'une valeur numérique, ou du numéro d'un registre. Cette valeur est sauvegardé dans le demi-registre pour le cycle suivant.
 
-			\item Le type de l'entrée est ensuite implémenté sur 2 bits pour indiquer si il s'agit d'un registre, de la valeur pointé par un registre ou simplement d'une valeur numérique (étendu avec des zéros ou la valeur dans le demi-registre).
+			\item Le type de l'entrée est ensuite implémenté sur $2$ bits pour indiquer si il s'agit d'un registre, de la valeur pointée par un registre ou simplement d'une valeur numérique (étendu avec des zéros ou la valeur dans le demi-registre).
 
 			\item Ensuite se situe la valeur de sortie sur 5 bits, car il s'agit forcément de l'indice d'un registre.
 
-			\item Et pour finir sur le 32\ieme bit, une indication sur si il s'agissait de la valeur du registre ou l'emplacement en mémoire pointé par le registre qui nous intéresse
+			\item Et pour finir sur le $32$\ieme bit, une indication sur si il s'agissait de la valeur du registre ou l'emplacement en mémoire pointé par le registre qui nous intéresse
 		\end{enumerate}
 
 
 \section{Langage assembleur}
 \subsection{Le langage}
-	\par{Nous avons créé notre langage assembleur en nous inspirant fortement du langage x86-64. Il comporte un set d'instructions plus restreint qui sont les suivantes :
+	\par{Nous avons créé notre langage assembleur en nous inspirant fortement du langage \texttt{x86-64}. Il comporte un jeu d'instructions plus restreint qui sont les suivantes :
 	\begin{itemize}
 		\item \texttt{add} $x \text{ } y \rightarrow x := x + y$
 		\item \texttt{sub} $x \text{ } y \rightarrow x := x - y$
@@ -153,7 +153,7 @@
 		\item \texttt{asr} $x \text{ } n \rightarrow $ arithmetical shift de $n$
 		\item \texttt{incr} $x \rightarrow x := x + 1$
 		\item \texttt{decr} $x \rightarrow x := x - 1$
-		\item \texttt{mov[flag]} $x \text{ } y \rightarrow x := y$ conditionnée par le drapeau
+		\item \texttt{mov[flag]} $x \text{ } y \rightarrow x := y$ conditionné par le drapeau
 		\item \texttt{jmp / j[flag]} $label \rightarrow $ saut (conditionnel) vers le label
 		\item \texttt{cmp} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x - y$
 		\item \texttt{test} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x \&\& y$
@@ -272,7 +272,7 @@
 
 		\subsection{Initialisation}
 
-			Une partie relativement technique de l'implémentation de l'horloge résidait dans son initialisation. À partir du nombre de secondes depuis le début de l'univers (aka le premier janvier 1970), il fallait tout décomposer pour avoir l'heure en :
+			Une partie relativement technique de l'implémentation de l'horloge résidait dans son initialisation. À partir du nombre de secondes depuis le début de l'univers (a.k.a. le premier janvier 1970), il fallait tout décomposer pour avoir l'heure en :
 			\begin{itemize}
 				\item unité des secondes,
 				\item dizaine des secondes,
@@ -310,10 +310,10 @@ ew2:
 
 \end{lstlisting}
 
-\subsection{Incrementation}
-	\par{Le tic d'horloge est donné sur le bit d'indice 31 de la RAM sous la forme d'un changement de valuer à chaque seconde. Notre programme récupère cette valeur à chaque boucle et la compare à la dernière valeur lue, pour savoir si il doit incrémenter le temps. \\
+\subsection{Incrémentation}
+	\par{Le tic d'horloge est donné sur le bit d'indice $31$ de la RAM sous la forme d'un changement de valeur à chaque seconde. Notre programme récupère cette valeur à chaque boucle et la compare à la dernière valeur lue, pour savoir si il doit incrémenter le temps. \\
 	Pour faciliter le traitement, chaque chiffre est stocké dans un registre différent. On utilise en plus un registre stockant le numéro du mois en entier et de même pour l'année, ainsi qu'un dernier indiquant si l'année est bissextile ou non.\\ 
-	On commence par incrémenter le chiffre des unités des secondes, le compare à 10, si il est strictement inférieur on saute directement à l'affichage et sinon on incrémente les dizaines, et ainsi de suite jusqu'à la fin de la propagation. Pour savoir si l'on change de mois on non après avoir incrémenté le jour, nous avons cherché à déterminer le nombre de jours du mois en un minimum de test, ce qui nous à conduit à l'arbre de test suivant où pour chaque noeud interne, le fils gauche correspond à un \texttt{false} et le droit à un \texttt{true} :
+	On commence par incrémenter le chiffre des unités des secondes, le compare à 10, si il est strictement inférieur on saute directement à l'affichage et sinon on incrémente les dizaines, et ainsi de suite jusqu'à la fin de la propagation. Pour savoir si l'on change de mois on non après avoir incrémenté le jour, nous avons cherché à déterminer le nombre de jours du mois en un minimum de test, ce qui nous à conduit à l'arbre de test suivant où pour chaque nœud interne, le fils gauche correspond à un \texttt{false} et le droit à un \texttt{true} :
 	$$
 	\begin{tikzpicture}[baseline = -20pt, level distance = 0.75cm, level 1/.style={sibling distance=3cm},
                    level 2/.style={sibling distance=2cm},
@@ -380,7 +380,7 @@ ew2:
 	\end{scope}
 	\end{tikzpicture}
 	$$
-	Le résultat est ensuite placé sur la RAM. Pour optimiser l'espace, les chiffres sont regroupés par quatre et le résultat est écrit sur les trois premieres cases de la RAM. On termine en donnant au bit 30 la valeur 1 pour signaler à l'affichage qu'il faut effectuer un rafraîchissement.}
+	Le résultat est ensuite placé sur la RAM. Pour optimiser l'espace, les chiffres sont regroupés par quatre et le résultat est écrit sur les trois premières cases de la RAM. On termine en donnant au bit 30 la valeur 1 pour signaler à l'affichage qu'il faut effectuer un rafraîchissement.}
 
 	\begin{figure}
 	\begin{lstlisting}[language=C, frame=single, caption={Keylogger test}]
