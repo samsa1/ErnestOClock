@@ -12,7 +12,7 @@
 
 `make speed`
 
-##### Pour tout nétoyer :
+##### Pour tout nettoyer :
 
 `make clean`
 
