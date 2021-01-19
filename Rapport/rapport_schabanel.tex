@@ -3,6 +3,7 @@
 \documentclass[10pt,a4paper,notitlepage ]{report}
 
 \usepackage{pfmath}
+\usepackage{tikz}
 
 
 \title{SystÃ¨mes numÃ©riques - \textsc{Ernest'O'Clock}}
@@ -20,6 +21,136 @@
 	\pagebreak
 	\pagenumbering{arabic}
 	
-	<text goes here>
+\section{Langage assembleur}
+\subsection{Le langage}
+	\par{Nous avons créé notre langage assembleur en nous inspirant fortement du langage x86-64. Il comporte un set d'instructions plus restreint qui sont les suivantes :
+	\begin{itemize}
+		\item \texttt{add} $x \text{ } y \rightarrow x := x + y$
+		\item \texttt{sub} $x \text{ } y \rightarrow x := x - y$
+		\item \texttt{neg} $x \rightarrow x := - x $
+		\item \texttt{and} $x \text{ } y \rightarrow x := x \&\& y$
+		\item \texttt{or} $x \text{ } y \rightarrow x := x || y$
+		\item \texttt{xor} $x \text{ } y \rightarrow x := x ^ y$
+		\item \texttt{not} $x \rightarrow x := ~x$
+		\item \texttt{lsl / lsr} $x \text{ } n \rightarrow $ logical shift de $n$
+		\item \texttt{asr} $x \text{ } n \rightarrow $ arithmetical shift de $n$
+		\item \texttt{incr} $x \rightarrow x := x + 1$
+		\item \texttt{decr} $x \rightarrow x := x - 1$
+		\item \texttt{mov[flag]} $x \text{ } y \rightarrow x := y$ conditionnée par le drapeau
+		\item \texttt{jmp / j[flag]} $label \rightarrow $ saut (conditionnel) vers le label
+		\item \texttt{cmp} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x - y$
+		\item \texttt{test} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x \&\& y$
+	\end{itemize}
+	Les registres sont des registres 32 bits et sont au nombre de 32. Ils sont nommés de \texttt{r00} à \texttt{r31}, les trois derniers ayant pour alias respectivement \texttt{rsp, rbp} et \texttt{ccp}\\
+	Les différents drapeaux autorisés sont :
+	\begin{itemize}
+		\item \texttt{e} : nullité du résultat [ZF]
+		\item \texttt{ne} : non nullité [~ZF]
+		\item \texttt{s} : résultat négatif [SF]
+		\item \texttt{ns} : résultat positif [~SF]
+		\item \texttt{g} : > [~(SF xor OF) & ~ZF] 
+		\item \texttt{ge} : $\geqslant$ [~(SF xor OF)]
+		\item \texttt{l} : < [SF xor OF]
+		\item \texttt{le} : $\leqslant$ [(SF xor OF)|ZF]
+		\item \texttt{a} : > non signé [~CF & ~ZF]
+		\item \texttt{ae} : $\geqslant$ non signé [~CF]
+		\item \texttt{b} : < non signé[CF]
+		\item \texttt{be} : $\leqslant$ non signé [CF|ZF]
+	\end{itemize}}
+	\par{La syntaxe  est calquée sur celle de x86-64 :
+	\begin{itemize}
+		\item[$\bullet$] $\%<nom text{ } du text{ } registre>$ pour désigner la valeur contenue dans un registre.
+		\item[$\bullet$] $(\%<nom text{ } du text{ } registre>)$ pour désigner la valeur contenue en mémoire à l'adresse contenue dans le registre, un seul de ces accès mémoire est autorisé par instruction
+		\item[$\bullet$] $\$<entier>$ pour les constantes.
+		\item[$\bullet$] $<label>:$ pour poser un label et $"<label>"$ pour y sauter, les caractère autorisés pour les noms de labels sont les lettres majuscule et minuscules de l'alphabet latin, '\_' et les chiffres hors première caractère (i.e. \textt{(['a'-'z' 'A'-'Z'] | '\_') (['a'-'z' 'A'-'Z'] | '\_' | ['0'-'9'])*}).
+		\item[$\bullet$] $#$ pour désigner le début d'un commentaire, tout le texte suivant un $#$ sera ignoré jusqu'au premier retour à la ligne.
+	\end{itemize}
+	La grammaire est décrite simplement par les règles suivantes :
+	$$\begin{array}{rcl}
+		<mem> & = & \%<register> | (\%<register>) \\
+		<param> & = &  \%<register> | (\%<register>) | \$<entier>\\
+		<instr> & = & <operateur> <mem> <param>? \\
+		& | & mov <flag>? <mem> <param> \\
+		& | & jmp <flag>? "<label>" \\
+		& | & <label> : \\ 
+	\end{array}} $$
+		
+\subsection{Compilation}
+	\par{Nous avons codé un compilateur de notre assembleur vers notre langage machine en utilisant OCaml, et en particulier ocamllex pour le lexer et menhir pour le parser. Notre compilateur vérifie que la limite d'une accès mémoire par instruction n'est pas dépassée et la présence d'un registre en argument quand celle-ci est requise.}
+	
+	
+\section{Horloge}	
+\subsection{Incrementation}
+	\par{Le tic d'horloge est donné sur le bit d'indice 31 de la RAM sous la forme d'un changement de valuer à chaque seconde. Notre programme récupère cette valeur à chaque boucle et la compare à la dernière valeur lue, qui est stockée dans \texttt{r00}, pour savoir si il doit incrémenter le temps. \\
+	Pour faciliter le traitement, chaque chiffre est stocké dans un registre différent. On utilise en plus un registre stockant le numéro du mois en entier et de même pour l'année, ainsi qu'un dernier indiquant si l'année est bissextile ou non.\\ 
+	On commence par incrémenter le chiffre des unités des secondes, le compare à 10, si il est strictement inférieur on saute directement à l'affichage et sinon on incrémente les dizaines, et ainsi de suite jusqu'à la fin de la propagation. Pour savoir si l'on change de mois on non après avoir incrémenté le jour, nous avons cherché à déterminer le nombre de jours du mois en un minimum de test, ce qui nous à conduit à l'arbre de test suivant où pour chaque noeud interne, le fils gauche correspond à un \texttt{false} et le droit à un \texttt{true} :
+	$$
+	\begin{tikzpicture}[baseline = -20pt, level distance = 0.75cm, level 1/.style={sibling distance=3cm},
+                   level 2/.style={sibling distance=2cm},
+                   level 3/.style={sibling distance=1.5cm},
+                   level 4/.style={sibling distance=0.75cm}]
+	\begin{scope}[every node/.style={fill=white, inner sep=1pt}]
+	\node {$\geslant 8\text{ ?}$}
+	 child {node {$\text{pair ?}$}
+	        child {node{$31$}}
+	        child {node{$= 2\text{ ?}$}
+	        		child {node{$30$}}
+			child {node{\text{bissextile ?}}
+				child {node{$28$}}
+				child {node{$29$}}
+				}
+			}
+	       }
+	 child {node {$\text{pair ?}$}
+	 	child {node{$30$}}
+		child {node{$31$}}
+		}
+	      ;
+	\end{scope}
+	\end{tikzpicture}
+	$$}
+
+
+\subsection{Output}
+	\par{Pour terminer la boucle, on convertit chaque chiffre en une séquence de 7 bits indiquant quels segments doivent être allumés. Pour économiser quelques cycles, nous avons cherché à minimiser le nombre de tests, ce qui nous a conduit à l'arbre de test suivant, $s_i$ représentant le $i$-ème bit : \\
+	$$
+	\begin{tikzpicture}[baseline = -20pt, level distance = 0.75cm, level 1/.style={sibling distance=3cm},
+                   level 2/.style={sibling distance=2cm},
+                   level 3/.style={sibling distance=1cm},
+                   level 4/.style={sibling distance=0.5cm}]
+	\begin{scope}[every node/.style={fill=white, inner sep=1pt}]
+	\node {$s_3$}
+	 child {node {$s_2$}
+	        child {node{$s_1$}
+	        		child {node{$s_0$}
+				child {node{$0$}}
+				child {node{$1$}}
+				}
+			child {node{$s_0$}
+				child {node{$2$}}
+				child {node{$3$}}
+				}
+			}
+	        child {node{$s_1$}
+	        		child {node{$s_0$}
+				child {node{$4$}}
+				child {node{$5$}}
+				}
+			child {node{$s_0$}
+				child {node{$6$}}
+				child {node{$7$}}
+				}
+			}
+	       }
+	 child {node {$s_0$}
+	 	child {node{$8$}}
+		child {node{$9$}}
+		}
+	      ;
+	\end{scope}
+	\end{tikzpicture}
+	$$
+	Le résultat est ensuite placé sur la RAM. Pour optimiser l'espace, les chiffres sont regroupés par quatre et le résultat est écrit sur les trois premieres cases de la RAM. On termine en donnant au bit 30 la valeur 1 pour signaler à l'affichage qu'il faut effectuer un rafraîchissement.}
+	
 	
 \end{document}
