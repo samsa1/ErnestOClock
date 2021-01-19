@@ -161,15 +161,15 @@
 		\item \texttt{a} : > non signé [$\neg$ CF \& $\neg$ ZF]
 		\item \texttt{ae} : $\geqslant$ non signé [$\neg$ CF]
 		\item \texttt{b} : < non signé[CF]
-		\item \texttt{be} : $\leqslant$ non signé [CF|ZF]
+		\item \texttt{be} : $\leqslant$ non signé [CF$\vert$ZF]
 	\end{itemize}}
 	\par{La syntaxe  est calquée sur celle de x86-64 :
 	\begin{itemize}
 		\item[$\bullet$] $\%<nom text{ } du text{ } registre>$ pour désigner la valeur contenue dans un registre.
 		\item[$\bullet$] $(\%<nom text{ } du text{ } registre>)$ pour désigner la valeur contenue en mémoire à l'adresse contenue dans le registre, un seul de ces accès mémoire est autorisé par instruction
 		\item[$\bullet$] $\$<entier>$ pour les constantes.
-		\item[$\bullet$] $<label>:$ pour poser un label et $"<label>"$ pour y sauter, les caractère autorisés pour les noms de labels sont les lettres majuscule et minuscules de l'alphabet latin, '\_' et les chiffres hors première caractère (i.e. \textt{(['a'-'z' 'A'-'Z'] | '\_') (['a'-'z' 'A'-'Z'] | '\_' | ['0'-'9'])*}).
-		\item[$\bullet$] $#$ pour désigner le début d'un commentaire, tout le texte suivant un $#$ sera ignoré jusqu'au premier retour à la ligne.
+		\item[$\bullet$] $<label>:$ pour poser un label et $"<label>"$ pour y sauter, les caractère autorisés pour les noms de labels sont les lettres majuscule et minuscules de l'alphabet latin, '\_' et les chiffres hors première caractère (i.e. \texttt{(['a'-'z' 'A'-'Z'] $\vert$ '\_') (['a'-'z' 'A'-'Z'] $\vert$ '\_' $\vert$ ['0'-'9'])*}).
+		\item[$\bullet$] $\#$ pour désigner le début d'un commentaire, tout le texte suivant un $\#$ sera ignoré jusqu'au premier retour à la ligne.
 	\end{itemize}
 	La grammaire est décrite simplement par les règles suivantes :
 	$$\begin{array}{rcl}
@@ -179,7 +179,7 @@
 		& | & mov <flag>? <mem> <param> \\
 		& | & jmp <flag>? "<label>" \\
 		& | & <label> : \\ 
-	\end{array}} $$
+	\end{array}$$}
 		
 \subsection{Compilation}
 	\par{Nous avons codé un compilateur de notre assembleur vers notre langage machine en utilisant OCaml, et en particulier ocamllex pour le lexer et menhir pour le parser. Notre compilateur vérifie que la limite d'une accès mémoire par instruction n'est pas dépassée et la présence d'un registre en argument quand celle-ci est requise.}
@@ -359,7 +359,7 @@ ew2:
                    level 3/.style={sibling distance=1.5cm},
                    level 4/.style={sibling distance=0.75cm}]
 	\begin{scope}[every node/.style={fill=white, inner sep=1pt}]
-	\node {$\geslant 8\text{ ?}$}
+	\node {$\geqslant 8\text{ ?}$}
 	 child {node {$\text{pair ?}$}
 	        child {node{$31$}}
 	        child {node{$= 2\text{ ?}$}
