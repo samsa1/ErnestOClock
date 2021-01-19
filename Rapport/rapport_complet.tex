@@ -433,5 +433,101 @@ int main(){
 	\end{figure}
 
 
+\newpage
+
+Codification du langage machine, les étoiles signifient que l'on peut mettre librement un 0 ou un 1 sans que cela change l'instruction.
+
+\begin{enumerate}
+
+\item Le code sur 7 bits
+
+\begin{itemize}
+
+\item ******1 si calcul
+\begin{itemize}
+\item *****11 -> arithmétique
+\begin{itemize}
+\item ****011 -> Additions
+\begin{itemize}
+\item 00**011 -> add
+\item 01**011 -> sub
+\item 10**011 -> incr
+\item 11**011 -> decr
+\end{itemize}
+
+\item ****111 -> Décalages
+\begin{itemize}
+\item 00**111 -> lsl
+\item 01**111 -> lsr
+\item 11**111 -> asr
+\end{itemize}
+\end{itemize}
+
+\item *****01 -> logique
+\begin{itemize}
+\item ****001 -> calcul booléen
+\begin{itemize}
+\item 00**001 -> and
+\item 01**001 -> or
+\item 10**001 -> nand
+\item 11**001 -> xor
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item ****101 -> not et minus
+\begin{itemize}
+\item ***0101 -> not
+\item ***1101 -> minus
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\item ******0 si mov
+\begin{itemize}
+\item 0000**0 -> move
+\item 1000**0 -> movne
+\item 0100**0 -> movs
+\item 1100**0 -> movns
+\item 0010**0 -> movge
+\item 1010**0 -> movg
+\item 0110**0 -> movle
+\item 1110**0 -> movl
+\item 0001**0 -> movae
+\item 1001**0 -> mova
+\item 0101**0 -> movbe
+\item 1101**0 -> movb
+\item **11**0 -> mov
+\end{itemize}
+
+\end{itemize}
+
+\item write\_enable
+
+1 pour écire, 0 sinon
+
+\item Entrée sur 16 bits
+
+si c'est un entier mettre en binaire avec les bits de poids fort à gauche.
+
+\item Type de l'entrée (imm, reg, mem):
+	\begin{itemize}
+		\item 00 -> valeur binaire avec des 0 au début : 000... param2
+		\item 01 -> valeur binaire avec le demi-registre au début : demiR.param2
+		\item 10 -> valeur registre
+		\item 11 -> valeur pointé par le registre
+	\end{itemize}
+
+Le demi-registre contient la valeur du param2 du cycle précédent.
+
+\item Sortie sur 5 bits
+
+Valeur en base 2 de l'indice du registre lu
+
+\item Type de la sortie (reg, mem)
+
+1 si dans la mémoire, 0 sinon
+
+
+\end{enumerate}
 
 \end{document}
