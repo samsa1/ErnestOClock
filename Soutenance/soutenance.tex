@@ -66,57 +66,7 @@
 		\tableofcontents
 	\end{frame}
 	
-	\section{Microprocesseur}
-	
-	\begin{frame}{Caractéristiques}
-		\begin{block}{Grandes idées}
-			\begin{itemize}
-				\item Peu d'instructions (pas de multiplication notamment)
-				\item 32 registres de 32 bits
-				\item Les mêmes drapeaux qu'en x86-64
-				\item Code dans la ROM, mémoire dans la RAM
-			\end{itemize}
-		\end{block}
-	\end{frame}
-	
-	\begin{frame}{Code machine}
-		\begin{block}{Format des instructions}
-			\begin{itemize}	
-				\item 7 bits de code machine
-				\item 1 bit d'écriture
-				\item 16 bits de valeur d'entrée
-				\item 2 bits de type de valeur d'entrée
-				\item 5 bits de valeur de sortie
-				\item 1 bit de valeur de sortie
-			\end{itemize}
-		\end{block}
-	\end{frame}
-	
-	\begin{frame}[fragile, shrink]{Initialisation de l'horloge}
-		\begin{lstlisting}[language={[x86masm]Assembler},morekeywords={lsr}, caption="Division euclidienne"]
-			mov %r26 $86400
-			mov %r25 %r26
-			jmp "ew1"
-			bw1:
-			lsl %r25 $1
-			ew1:
-			cmp %r28 %r25
-			jb "bw1"
-			mov %r27 $0
-			bw2:
-			lsl %r27 $1
-			cmp %r28 %r25
-			ja "ew2"
-			add %r27 $1
-			sub %r28 %r25
-			ew2:
-			lsr %r25 $1
-			cmp %r25 %r26
-			jge "bw2"
-		\end{lstlisting}
-	\end{frame}
-	
-	\section{Compilation \texttt{.net} $\rightarrow$ \texttt{.c}}
+		\section{Compilation \texttt{.net} $\rightarrow$ \texttt{.c}}
 	
 	\begin{frame}{Compilation}
 			\begin{table}
@@ -144,6 +94,105 @@
 			\caption{Traduction \texttt{.net} $\rightarrow$ \texttt{.c}}
 		\end{table}
 	\end{frame}
+
+
+	\section{Microprocesseur}
+	
+	\begin{frame}{Caractéristiques}
+		\begin{block}{Grandes idées}
+			\begin{itemize}
+				\item Peu d'instructions (pas de multiplication notamment)
+				\item 32 registres de 32 bits
+				\item Les mêmes drapeaux qu'en x86-64
+				\item Code dans la ROM, mémoire dans la RAM
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Code machine}
+		\begin{block}{Format des instructions}
+			\begin{itemize}	
+				\item 7 bits de code machine
+				\item 1 bit d'écriture
+				\item 16 bits de valeur d'entrée
+				\item 2 bits de type de valeur d'entrée
+				\item 5 bits de valeur de sortie
+				\item 1 bit de valeur de sortie
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\section{Langage assembleur}
+	
+	\begin{frame}{Opérations arithmétiques et booléennes}
+		\begin{itemize}
+		\item \texttt{add} $x \text{ } y \rightarrow x := x + y$
+		\item \texttt{sub} $x \text{ } y \rightarrow x := x - y$
+		\item \texttt{neg} $x \rightarrow x := - x $
+		\item \texttt{and} $x \text{ } y \rightarrow x := x \&\& y$
+		\item \texttt{or} $x \text{ } y \rightarrow x := x || y$
+		\item \texttt{xor} $x \text{ } y \rightarrow x := x ^ y$
+		\item \texttt{not} $x \rightarrow x := \neg x$
+		\item \texttt{lsl / lsr} $x \text{ } n \rightarrow $ logical shift de $n$
+		\item \texttt{asr} $x \text{ } n \rightarrow $ arithmetical shift de $n$
+		\item \texttt{incr} $x \rightarrow x := x + 1$
+		\item \texttt{decr} $x \rightarrow x := x - 1$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Autres opérateurs}
+		\begin{itemize}
+		\item \texttt{mov[flag]} $x \text{ } y \rightarrow x := y$ conditionnée par le drapeau
+		\item \texttt{jmp / j[flag]} $label \rightarrow $ saut (conditionnel) vers le label \\
+		\item \texttt{cmp} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x - y$
+		\item \texttt{test} $x \text{ } y \rightarrow $ donne aux drapeaux les valeurs pour $x \&\& y$
+		\end{itemize}
+	\end{frame}
+
+		\begin{frame}{Les drapeaux}
+	\begin{itemize}
+		\item \texttt{e} : nullité du résultat [ZF]
+		\item \texttt{ne} : non nullité [$\neg$ ZF]
+		\item \texttt{s} : résultat négatif [SF]
+		\item \texttt{ns} : résultat positif [$\neg$ SF]
+		\item \texttt{g} : > [$\neg$(SF xor OF) \& $\neg$ ZF] 
+		\item \texttt{ge} : $\geqslant$ [$\neg$(SF xor OF)]
+		\item \texttt{l} : < [SF xor OF]
+		\item \texttt{le} : $\leqslant$ [(SF xor OF)|ZF]
+		\item \texttt{a} : > non signé [$\neg$ CF \& $\neg$ ZF]
+		\item \texttt{ae} : $\geqslant$ non signé [$\neg$ CF]
+		\item \texttt{b} : < non signé[CF]
+		\item \texttt{be} : $\leqslant$ non signé [CF$\vert$ZF]
+	\end{itemize}
+	\end{frame}
+		
+	\begin{frame}{Syntaxe}
+		\begin{itemize}
+		\item[$\bullet$] $\%<nom \text{ } du \text{ } registre>$ pour désigner la valeur contenue dans un registre.
+		\item[$\bullet$] $(\%<nom \text{ } du \text{ } registre>)$ pour désigner la valeur contenue en mémoire à  l'adresse contenue dans le registre, un seul de ces accès mémoire est autorisé par instruction
+		\item[$\bullet$] $\$<entier>$ pour les constantes.
+		\item[$\bullet$] $<label>:$ pour poser un label et $"<label>"$ pour y sauter, les caractère autorisés pour les noms de labels sont les lettres majuscule et minuscules de l'alphabet latin, '\_' et les chiffres hors première caractère (i.e. \texttt{(['a'-'z' 'A'-'Z'] $\vert$ '\_') (['a'-'z' 'A'-'Z'] $\vert$ '\_' $\vert$ ['0'-'9'])*}).
+		\item[$\bullet$] $\#$ pour désigner le début d'un commentaire, tout le texte suivant un $\#$ sera ignoré jusqu'au premier retour à  la ligne.
+	\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Grammaire}
+		La grammaire est décrite simplement par les règles suivantes :
+	$$\begin{array}{rcl}
+		<mem> & = & \%<register> | (\%<register>) \\
+		<param> & = &  \%<register> | (\%<register>) | \$<entier>\\
+		<instr> & = & <operateur> <mem> <param>? \\
+		& | & mov <flag>? <mem> <param> \\
+		& | & jmp <flag>? "<label>" \\
+		& | & <label> : \\ 
+	\end{array}$$
+	\end{frame}
+	
+	\begin{frame}{Assembleur}
+		Réalisé en \texttt{OCaml} avec \texttt{ocamllex} et \texttt{menhir}.\\
+		Vérifie la limite d'un accès mémoire par instruction.
+	\end{frame}
+
 	
 	\section{Interface homme machine}
 	
@@ -204,4 +253,110 @@
 
 	\end{frame}
 	
+	\section{Horloge}
+
+		\begin{frame}[fragile, shrink]{Initialisation de l'horloge}
+		\begin{lstlisting}[language={[x86masm]Assembler},morekeywords={lsr}, caption="Division euclidienne"]
+			mov %r26 $86400
+			mov %r25 %r26
+			jmp "ew1"
+			bw1:
+			lsl %r25 $1
+			ew1:
+			cmp %r28 %r25
+			jb "bw1"
+			mov %r27 $0
+			bw2:
+			lsl %r27 $1
+			cmp %r28 %r25
+			ja "ew2"
+			add %r27 $1
+			sub %r28 %r25
+			ew2:
+			lsr %r25 $1
+			cmp %r25 %r26
+			jge "bw2"
+		\end{lstlisting}
+	\end{frame}
+	
+
+	\begin{frame}{Incrémentation}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{Schema_incrementation}
+		\caption{Schéma d'incrémentation}
+	\end{figure}
+
+	\end{frame}
+		
+	\begin{frame}{Schéma de test pour les mois}
+			$$
+	\begin{tikzpicture}[baseline = -20pt, level distance = 0.75cm, level 1/.style={sibling distance=3cm},
+                   level 2/.style={sibling distance=2cm},
+                   level 3/.style={sibling distance=1.5cm},
+                   level 4/.style={sibling distance=0.75cm}]
+	\begin{scope}[every node/.style={fill=white, inner sep=1pt}]
+	\node {$\geqslant 8\text{ ?}$}
+	 child {node {$\text{pair ?}$}
+	        child {node{$31$}}
+	        child {node{$= 2\text{ ?}$}
+	        		child {node{$30$}}
+			child {node{\text{bissextile ?}}
+				child {node{$28$}}
+				child {node{$29$}}
+				}
+			}
+	       }
+	 child {node {$\text{pair ?}$}
+	 	child {node{$30$}}
+		child {node{$31$}}
+		}
+	      ;
+	\end{scope}
+	\end{tikzpicture}
+	$$
+	\end{frame}
+	
+	\begin{frame}{Output}
+		$$
+	\begin{tikzpicture}[baseline = -20pt, level distance = 0.75cm, level 1/.style={sibling distance=3cm},
+                   level 2/.style={sibling distance=2cm},
+                   level 3/.style={sibling distance=1cm},
+                   level 4/.style={sibling distance=0.5cm}]
+	\begin{scope}[every node/.style={fill=white, inner sep=1pt}]
+	\node {$s_3$}
+	 child {node {$s_2$}
+	        child {node{$s_1$}
+	        		child {node{$s_0$}
+				child {node{$0$}}
+				child {node{$1$}}
+				}
+			child {node{$s_0$}
+				child {node{$2$}}
+				child {node{$3$}}
+				}
+			}
+	        child {node{$s_1$}
+	        		child {node{$s_0$}
+				child {node{$4$}}
+				child {node{$5$}}
+				}
+			child {node{$s_0$}
+				child {node{$6$}}
+				child {node{$7$}}
+				}
+			}
+	       }
+	 child {node {$s_0$}
+	 	child {node{$8$}}
+		child {node{$9$}}
+		}
+	      ;
+	\end{scope}
+	\end{tikzpicture}
+	$$
+	\end{frame}
+	
+
 \end{document}
