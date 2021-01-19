@@ -541,14 +541,14 @@ affichage_dizaines_Minutes:
     or (%r26) $2
     mov %r00 $0
     test %r01 $1
-    je "casImpair"
-casPair:
-    test (%r00) $1
-    jne "casPair"
-    jmp "condfin"
+    je "casPair"
 casImpair:
     test (%r00) $1
-    je "casImpair"
+    jne "casImpair"
+    jmp "condfin"
+casPair:
+    test (%r00) $1
+    je "casPair"
 condfin:
     incr %r01
     cmp %r01 $10

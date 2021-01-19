@@ -31,6 +31,17 @@
 	\pagebreak
 	\pagenumbering{arabic}
 	
+	\section{Utilisation de l'horloge}
+
+		Il a y 4 commandes dans le makefile qui sont utile pour l'utilisation de l'horloge :
+
+		\begin{itemize}
+			\item \texttt{make} qui va simplement build l'exécutable de l'horloge.
+			\item \texttt{make run} qui va build l'exécutable si il ne l'est pas déjà, puis la lancer.
+			\item \texttt{make speed} qui fait la même chose que la commande précédente pas avec le mode hyper-vitesse.
+			\item \texttt{make clean} qui nétoie tout (mais nétoie moins que \texttt{rm -rf $\backslash$ }).
+		\end{itemize}
+
 	\section{Compilation $\tt{.net} \rightarrow \tt{.c}$}
 	
 	\subsection{Motivations}
@@ -115,11 +126,11 @@
 		\begin{enumerate}
 			\item L'opération codé sur les 7 premiers bits. Il s'agit du parcours dans l'arbre de multiplexeur permettant de nous ramener à la bonne valeur. Nous n'utilisons pas tous les bits pour nos instructions ce qui nous permettrais d'en rajouter plus si besoin.
 
-			\item Sur le 8\ieme bit se situe d'écrire ou non le résultat du calcul. Permettant ainsi de différencier les \textbf{and} et \textbf{sub} des instructions \textbf{test} et \textbf{cmp}.
+			\item Sur le 8\ieme bit se situe l'ordre d'écrire ou non le résultat du calcul. Permettant ainsi de différencier les \textbf{and} et \textbf{sub} des instructions \textbf{test} et \textbf{cmp}.
 
-			\item La valeur d'entrée sur 16 bits. Cependant sur ces bits seulement 5 sont utilisé pour les décalages et les entré de registre. Les autres sont ignorées.
+			\item La valeur d'entrée sur 16 bits. Il peut s'agir d'une valeur numérique, ou du numéro d'un registre. Cette valeur est sauvegardé dans le demi-registre pour le cycle suivant.
 
-			\item Le type de l'entrée est ensuite implémenté sur 2 bits pour indiquer si il s'agit d'un registre, de la valeur pointé par un registre ou simplement d'une valeur numérique.
+			\item Le type de l'entrée est ensuite implémenté sur 2 bits pour indiquer si il s'agit d'un registre, de la valeur pointé par un registre ou simplement d'une valeur numérique (étendu avec des zéros ou la valeur dans le demi-registre).
 
 			\item Ensuite se situe la valeur de sortie sur 5 bits, car il s'agit forcément de l'indice d'un registre.
 
@@ -182,7 +193,7 @@
 	\end{array}$$}
 		
 \subsection{Compilation}
-	\par{Nous avons codé un compilateur de notre assembleur vers notre langage machine en utilisant OCaml, et en particulier ocamllex pour le lexer et menhir pour le parser. Notre compilateur vérifie que la limite d'une accès mémoire par instruction n'est pas dépassée et la présence d'un registre en argument quand celle-ci est requise.}
+	\par{Nous avons codé un assembleur qui assemble notre langage assembleur vers notre langage machine en utilisant OCaml, et en particulier \texttt{ocamllex} pour le lexer et \texttt{menhir} pour le parser. Notre compilateur vérifie que la limite d'une accès mémoire par instruction n'est pas dépassée et la présence d'un registre en argument quand celle-ci est requise.}
 
 
 	\section{Interface homme machine}
@@ -256,56 +267,6 @@
 	
 	De manière orthogonale, nous aurions aussi aimé, quitte à utiliser \texttt{OpenGL}, pouvoir faire profiter l'utilisateur de l'horloge d'un environnement 3D composé essentiellement d'une table de chevet sur laquelle repose un radio-réveil (notre horloge).
 	
-	
-	\begin{figure}
-	\begin{lstlisting}[language=C, frame=single, caption={Keylogger test}]
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <linux/input.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <libevdev/libevdev.h>
-#include <libevdev/libevdev-uinput.h>
-
-int main(){
-	
-	struct libevdev *dev = NULL;
-	int fd;
-	int rc = 1;
-	
-	// keyboard : /dev/input/event3
-	//fd : file descriptor
-	fd = open("/dev/input/event3", O_RDONLY|O_NONBLOCK);
-	// rc : return code
-	// modifies *dev such that it is hooked to the /dev/input file
-	rc = libevdev_new_from_fd(fd, &dev);
-	if (rc < 0) {
-		//error happenned
-		fprintf(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
-		exit(1);
-	}
-	printf("Input device name: \"%s\"\n", libevdev_get_name(dev));
-	printf("Input device ID: bus %#x vendor %#x product %#x\n",
-	libevdev_get_id_bustype(dev),
-	libevdev_get_id_vendor(dev),
-	libevdev_get_id_product(dev));
-	
-	do {
-		struct input_event ev;
-		rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
-		if (rc == 0)
-		printf("Event: %s %s %d\n",
-		libevdev_event_type_get_name(ev.type),
-		libevdev_event_code_get_name(ev.type, ev.code),
-		ev.value);
-	} while (rc == 1 || rc == 0 || rc == -EAGAIN);
-	0;
-}
-	\end{lstlisting}
-	\end{figure}
 
 	\section{Horloge}
 
@@ -350,7 +311,7 @@ ew2:
 \end{lstlisting}
 
 \subsection{Incrementation}
-	\par{Le tic d'horloge est donné sur le bit d'indice 31 de la RAM sous la forme d'un changement de valuer à chaque seconde. Notre programme récupère cette valeur à chaque boucle et la compare à la dernière valeur lue, qui est stockée dans \texttt{r00}, pour savoir si il doit incrémenter le temps. \\
+	\par{Le tic d'horloge est donné sur le bit d'indice 31 de la RAM sous la forme d'un changement de valuer à chaque seconde. Notre programme récupère cette valeur à chaque boucle et la compare à la dernière valeur lue, pour savoir si il doit incrémenter le temps. \\
 	Pour faciliter le traitement, chaque chiffre est stocké dans un registre différent. On utilise en plus un registre stockant le numéro du mois en entier et de même pour l'année, ainsi qu'un dernier indiquant si l'année est bissextile ou non.\\ 
 	On commence par incrémenter le chiffre des unités des secondes, le compare à 10, si il est strictement inférieur on saute directement à l'affichage et sinon on incrémente les dizaines, et ainsi de suite jusqu'à la fin de la propagation. Pour savoir si l'on change de mois on non après avoir incrémenté le jour, nous avons cherché à déterminer le nombre de jours du mois en un minimum de test, ce qui nous à conduit à l'arbre de test suivant où pour chaque noeud interne, le fils gauche correspond à un \texttt{false} et le droit à un \texttt{true} :
 	$$
@@ -421,5 +382,56 @@ ew2:
 	$$
 	Le résultat est ensuite placé sur la RAM. Pour optimiser l'espace, les chiffres sont regroupés par quatre et le résultat est écrit sur les trois premieres cases de la RAM. On termine en donnant au bit 30 la valeur 1 pour signaler à l'affichage qu'il faut effectuer un rafraîchissement.}
 
-		
+	\begin{figure}
+	\begin{lstlisting}[language=C, frame=single, caption={Keylogger test}]
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <linux/input.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <libevdev/libevdev.h>
+#include <libevdev/libevdev-uinput.h>
+
+int main(){
+	
+	struct libevdev *dev = NULL;
+	int fd;
+	int rc = 1;
+	
+	// keyboard : /dev/input/event3
+	//fd : file descriptor
+	fd = open("/dev/input/event3", O_RDONLY|O_NONBLOCK);
+	// rc : return code
+	// modifies *dev such that it is hooked to the /dev/input file
+	rc = libevdev_new_from_fd(fd, &dev);
+	if (rc < 0) {
+		//error happenned
+		fprintf(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
+		exit(1);
+	}
+	printf("Input device name: \"%s\"\n", libevdev_get_name(dev));
+	printf("Input device ID: bus %#x vendor %#x product %#x\n",
+	libevdev_get_id_bustype(dev),
+	libevdev_get_id_vendor(dev),
+	libevdev_get_id_product(dev));
+	
+	do {
+		struct input_event ev;
+		rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+		if (rc == 0)
+		printf("Event: %s %s %d\n",
+		libevdev_event_type_get_name(ev.type),
+		libevdev_event_code_get_name(ev.type, ev.code),
+		ev.value);
+	} while (rc == 1 || rc == 0 || rc == -EAGAIN);
+	0;
+}
+	\end{lstlisting}
+	\end{figure}
+
+
+
 \end{document}
